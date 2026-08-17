@@ -47,8 +47,8 @@ class SetupViewModel(application: Application) : AndroidViewModel(application) {
     private val environment = MutableStateFlow(Environment())
 
     /**
-     * Drives the pairing countdown and, just as importantly, expires the code even when nobody
-     * ever calls [PairingSession.consume]. Only ticks while the screen is being observed.
+     * Drives the pairing countdown and, just as importantly, expires the displayed code even when
+     * no controller ever tries to redeem it. Only ticks while the screen is being observed.
      */
     private val secondTicker: Flow<Long> = flow {
         while (true) {
