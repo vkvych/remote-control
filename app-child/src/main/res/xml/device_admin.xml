@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Policy set requested when this app is activated as a device admin / Device Owner.
+    Phase 1 exercises none of these; they are declared up front because Device Owner can only be
+    provisioned on a device with no accounts configured, and re-declaring policies later would mean
+    another provisioning round.
+-->
+<device-admin xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-policies>
+        <limit-password />
+        <watch-login />
+        <force-lock />
+        <disable-keyguard-features />
+    </uses-policies>
+</device-admin>

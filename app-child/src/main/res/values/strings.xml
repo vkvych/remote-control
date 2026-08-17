@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Remote Control Agent</string>
+
+    <string name="notification_channel_name">Remote control agent</string>
+    <string name="notification_channel_description">Shows that this device can be managed from the paired parent device.</string>
+    <string name="notification_not_paired">Not paired yet — open the app to show a pairing code</string>
+    <string name="notification_waiting">Ready — waiting for the parent device</string>
+    <plurals name="notification_connected">
+        <item quantity="one">%d controller connected</item>
+        <item quantity="other">%d controllers connected</item>
+    </plurals>
+
+    <string name="device_admin_description">Lets the paired parent device manage apps and settings on this device.</string>
+</resources>
