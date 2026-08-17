@@ -3,13 +3,10 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
+// Java 17 to match what the Android modules compile against — this artifact is consumed by them
+// directly, so it must not emit anything newer than they can read.
 kotlin {
     jvmToolchain(17)
-    compilerOptions {
-        // The Android modules consume this artifact directly, so keep it free of
-        // anything that would not run on Android's JVM.
-        freeCompilerArgs.add("-Xjvm-default=all")
-    }
 }
 
 dependencies {

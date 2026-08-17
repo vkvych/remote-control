@@ -42,8 +42,7 @@
             android:foregroundServiceType="specialUse">
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="Parental remote control agent: keeps a local control server
-                    reachable so a paired parent device can adjust this device's settings." />
+                android:value="Keeps a local control server reachable so the paired parent device can adjust this device's settings." />
         </service>
 
         <receiver

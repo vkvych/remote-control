@@ -24,11 +24,11 @@ object NetworkAddresses {
 
     fun reachableAddresses(): List<LocalAddress> = try {
         NetworkInterface.getNetworkInterfaces()
-            .asSequence()
+            .toList()
             .filter { it.isUp && !it.isLoopback }
             .flatMap { networkInterface ->
                 networkInterface.inetAddresses
-                    .asSequence()
+                    .toList()
                     .filterIsInstance<Inet4Address>()
                     .map { address ->
                         LocalAddress(
@@ -41,7 +41,6 @@ object NetworkAddresses {
             .filter { it.address.isNotEmpty() }
             // Tailscale first: it is the address that keeps working away from home.
             .sortedByDescending { it.viaTailscale }
-            .toList()
     } catch (e: Exception) {
         Log.w(TAG, "Could not enumerate network interfaces", e)
         emptyList()

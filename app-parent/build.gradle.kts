@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.vkvych.remotecontrol.child"
+    namespace = "com.vkvych.remotecontrol.parent"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.vkvych.remotecontrol.child"
+        applicationId = "com.vkvych.remotecontrol.parent"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
@@ -21,9 +21,6 @@ android {
 
     buildTypes {
         release {
-            // The app is sideloaded onto family devices, never shipped through a store, so the
-            // size win from R8 is not worth the risk of it stripping Ktor / serialization
-            // internals that are only reached reflectively.
             isMinifyEnabled = false
         }
     }
@@ -35,14 +32,6 @@ android {
 
     buildFeatures {
         compose = true
-    }
-
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-            excludes += "/META-INF/INDEX.LIST"
-            excludes += "/META-INF/io.netty.versions.properties"
-        }
     }
 }
 
@@ -57,20 +46,14 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.serialization.json)
-
-    implementation(libs.ktor.server.core)
-    implementation(libs.ktor.server.cio)
-    implementation(libs.ktor.server.websockets)
-    implementation(libs.ktor.server.content.negotiation)
-    implementation(libs.ktor.server.status.pages)
-    implementation(libs.ktor.serialization.json)
+    implementation(libs.okhttp)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.lifecycle.service)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.datastore.preferences)
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)

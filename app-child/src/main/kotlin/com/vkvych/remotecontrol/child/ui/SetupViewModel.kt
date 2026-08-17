@@ -93,12 +93,12 @@ class SetupViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun startAgent() {
-        AgentService.start(getApplication())
+        AgentService.start(getApplication<Application>())
         refresh()
     }
 
     fun stopAgent() {
-        AgentService.stop(getApplication())
+        AgentService.stop(getApplication<Application>())
         container.pairingSession.cancel()
     }
 
@@ -108,7 +108,7 @@ class SetupViewModel(application: Application) : AndroidViewModel(application) {
      * work.
      */
     fun showPairingCode() {
-        AgentService.start(getApplication())
+        AgentService.start(getApplication<Application>())
         container.pairingSession.start()
         refresh()
     }
