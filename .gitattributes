@@ -1,0 +1,19 @@
+# Normalise line endings so the repo is identical whichever machine touches it.
+* text=auto eol=lf
+
+# Windows tooling needs CRLF; the wrapper scripts are the only files that care.
+*.bat text eol=crlf
+gradlew text eol=lf
+
+*.jar binary
+*.apk binary
+*.aab binary
+*.keystore binary
+*.png binary
+*.jpg binary
+*.webp binary
+
+# The Gradle wrapper is vendored, not authored here — keep it out of language stats and diffs.
+gradle/wrapper/gradle-wrapper.jar binary linguist-vendored
+gradlew linguist-vendored
+gradlew.bat linguist-vendored
