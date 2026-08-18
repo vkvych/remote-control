@@ -175,6 +175,58 @@ Nothing in Phases 1 and 2 depends on it.
 
 ---
 
+## Testing on emulators
+
+You can exercise the whole pairing flow on two Android emulators, no physical devices needed.
+This is the fastest way to smoke-test a change end to end.
+
+**Extra prerequisite: hardware virtualization.** The x86_64 emulator needs KVM on Linux
+(`/dev/kvm` must exist). Check with `grep -c vmx /proc/cpuinfo` — a `0` means Intel VT-x (or AMD-V)
+is disabled in your UEFI/BIOS. Enable *Intel Virtualization Technology / VT-x* in firmware, reboot,
+then confirm `/dev/kvm` appears and add yourself to the `kvm` group (`sudo usermod -aG kvm "$USER"`).
+
+The helper script does the whole setup:
+
+```bash
+export JAVA_HOME="$HOME/.jdks/temurin-17.0.20"   # a JDK 17
+export ANDROID_HOME="$HOME/Android/Sdk"
+scripts/run-emulators.sh
+```
+
+It installs the emulator and the API 36 system image, creates two AVDs (`rc_child`, `rc_parent`),
+boots both headless, builds and installs the two APKs, and bridges their networks. Tear it all down
+with `scripts/run-emulators.sh --stop`.
+
+### Why the network needs bridging
+
+Each emulator sits behind its own NAT, so the two guests cannot reach each other directly. The
+script bridges them through the host loopback:
+
+```
+child guest :8765  --adb forward-->  host 127.0.0.1:8765
+parent  --> 10.0.2.2:8765 --> host loopback --> child guest :8765
+```
+
+`10.0.2.2` is the emulator's built-in alias for the host loopback, and `adb forward` publishes the
+child's agent port there. So when the script finishes, pair the parent against **host `10.0.2.2`,
+port `8765`**.
+
+### The one manual step
+
+The agent only opens its server after you tap **Start agent**, and pairing needs the six-digit code
+it shows — so finish by hand once the emulators are up:
+
+1. On the **child** emulator: open *Remote Control Agent* → **Start agent** → **Show pairing code**.
+   Sanity-check the server from the host with `curl -s http://127.0.0.1:8765/health`.
+2. On the **parent** emulator: open *Remote Control* and pair with host `10.0.2.2`, port `8765`, and
+   that code.
+
+Grant Device Owner for Phase 2 features on the emulator with
+`adb -s emulator-5554 shell dpm set-device-owner com.vkvych.remotecontrol.child/.admin.AdminReceiver`
+(only on a device with no accounts added).
+
+---
+
 ## Troubleshooting
 
 **"Could not reach an agent at ..."**
