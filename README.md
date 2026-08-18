@@ -51,7 +51,10 @@ ringer mode, so a child using the hardware keys shows up on the parent's sliders
 
 ## Getting started
 
-Build both APKs and install them:
+You need **JDK 17** (the pinned Gradle 8.14.3 does not run on 21+/26, and the modules use a Java 17
+toolchain) and the **Android SDK** with the API 36 platform and build-tools 36.0.0. See
+[docs/SETUP.md § Prerequisites](docs/SETUP.md#prerequisites) for install steps. With `JAVA_HOME` and
+`ANDROID_HOME` set, build both APKs and install them:
 
 ```bash
 ./gradlew :app-child:assembleDebug :app-parent:assembleDebug

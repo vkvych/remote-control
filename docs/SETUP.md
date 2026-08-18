@@ -10,6 +10,44 @@ You need: the child's Galaxy phone or tablet, the parent's phone, a USB cable an
 
 ## 1. Build the APKs
 
+### Prerequisites
+
+You build on your computer, not the phones. You need:
+
+- **JDK 17.** The Gradle wrapper is pinned to 8.14.3, which runs on Java 17–24 only — a newer JDK
+  (21+, and certainly 26) fails with an opaque version error, and the modules compile against a
+  Java 17 toolchain regardless. Eclipse Temurin 17 is the safe choice. A tidy, tool-friendly home
+  is `~/.jdks/` (IntelliJ's convention, and Gradle scans it for toolchains):
+
+  ```bash
+  # Linux x64 example — adjust the URL for your OS/arch from https://adoptium.net
+  mkdir -p ~/.jdks && cd ~/.jdks
+  curl -sSL -o temurin17.tar.gz \
+    "https://api.adoptium.net/v3/binary/latest/17/ga/linux/x64/jdk/hotspot/normal/eclipse?project=jdk"
+  tar xzf temurin17.tar.gz && rm temurin17.tar.gz
+  export JAVA_HOME="$HOME/.jdks/$(ls ~/.jdks | grep '^jdk-17')"
+  ```
+
+- **Android SDK** with the API 36 platform and build-tools 36.0.0 (the apps target `compileSdk 36`).
+  Android Studio installs these for you; on a headless machine use the command-line tools:
+
+  ```bash
+  export ANDROID_HOME="$HOME/Android/Sdk"
+  mkdir -p "$ANDROID_HOME/cmdline-tools"
+  # Download commandlinetools-linux-<latest>_latest.zip from
+  # https://developer.android.com/studio#command-line-tools, unzip it, then:
+  #   mv cmdline-tools "$ANDROID_HOME/cmdline-tools/latest"
+  SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+  yes | "$SDKMANAGER" --licenses
+  "$SDKMANAGER" "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+  ```
+
+  Point Gradle at the SDK with either the `ANDROID_HOME` environment variable (above) or a
+  `local.properties` file in the repo root — `sdk.dir=/absolute/path/to/Android/Sdk`.
+  `local.properties` is gitignored; keep it out of commits.
+
+With `JAVA_HOME` and `ANDROID_HOME` exported (put them in your shell profile to make them stick):
+
 ```bash
 ./gradlew :app-child:assembleDebug :app-parent:assembleDebug
 ```
