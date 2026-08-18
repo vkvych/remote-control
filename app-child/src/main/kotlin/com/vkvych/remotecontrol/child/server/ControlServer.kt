@@ -97,8 +97,8 @@ class ControlServer(
     private fun Application.module() {
         install(WebSockets) {
             // Keeps NAT and Tailscale paths warm, and surfaces a dead controller reasonably fast.
-            pingPeriod = 15.seconds
-            timeout = 30.seconds
+            pingPeriodMillis = 15.seconds.inWholeMilliseconds
+            timeoutMillis = 30.seconds.inWholeMilliseconds
         }
         install(ContentNegotiation) { json(ProtocolJson) }
         install(StatusPages) {
