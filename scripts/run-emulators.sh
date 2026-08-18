@@ -43,6 +43,17 @@ log()  { printf '\033[1;34m==>\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m!!\033[0m %s\n' "$*" >&2; }
 die()  { printf '\033[1;31mxx\033[0m %s\n' "$*" >&2; exit 1; }
 
+# `yes | sdkmanager` under `set -o pipefail` would abort the script: `yes` is killed
+# by SIGPIPE (exit 141) the moment sdkmanager finishes, and pipefail would propagate
+# that as a pipeline failure. Relax pipefail here and report sdkmanager's own status.
+sdk_install() {
+    set +o pipefail
+    yes | "$SDKMANAGER" "$@" >/dev/null
+    local rc=${PIPESTATUS[1]}
+    set -o pipefail
+    return "$rc"
+}
+
 # --- Locate the SDK tools ----------------------------------------------------
 : "${ANDROID_HOME:=${ANDROID_SDK_ROOT:-$HOME/Android/Sdk}}"
 [[ -d "$ANDROID_HOME" ]] || die "ANDROID_HOME ($ANDROID_HOME) not found. See docs/SETUP.md § Prerequisites."
@@ -73,11 +84,11 @@ command -v "$ADB" >/dev/null 2>&1 || [[ -x "$ADB" ]] || die "adb not found at $A
 # --- Install SDK packages if needed ------------------------------------------
 if [[ ! -x "$EMULATOR" ]]; then
     log "Installing the emulator and system image ($SYSTEM_IMAGE) — this is a large download"
-    yes | "$SDKMANAGER" "emulator" "$SYSTEM_IMAGE" >/dev/null
+    sdk_install "emulator" "$SYSTEM_IMAGE"
 fi
 if [[ ! -d "$ANDROID_HOME/system-images/android-36" ]]; then
     log "Installing system image $SYSTEM_IMAGE"
-    yes | "$SDKMANAGER" "$SYSTEM_IMAGE" >/dev/null
+    sdk_install "$SYSTEM_IMAGE"
 fi
 
 # --- Create the two AVDs (idempotent) ----------------------------------------
