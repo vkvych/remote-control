@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Deliberately different from the agent app's blue: the two icons sit next to each other on
+         the parent's phone during setup and must not be confusable. -->
+    <color name="ic_launcher_background">#1F6F5C</color>
+</resources>
